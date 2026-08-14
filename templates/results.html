@@ -1,0 +1,1384 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Results & Analytics | Admin
+{% endblock %}
+
+{% block content %}
+
+<div class="results-page">
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <div class="results-header">
+
+        <div>
+
+            <span class="eyebrow">
+                PERFORMANCE ANALYTICS
+            </span>
+
+            <h1>
+                Test Results
+            </h1>
+
+            <p>
+                Monitor student performance, test attempts and scores.
+            </p>
+
+        </div>
+
+
+        <div class="header-actions">
+
+            <a
+                href="{{ url_for('dashboard') }}"
+                class="secondary-btn">
+
+                ← Dashboard
+
+            </a>
+
+            <button
+                onclick="location.reload()"
+                class="primary-btn">
+
+                🔄 Refresh
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         RESULT STATISTICS
+         ===================================================== -->
+
+    <div class="result-stats">
+
+        <div class="result-stat-card">
+
+            <div class="result-stat-icon">
+                📊
+            </div>
+
+            <div>
+
+                <span>
+                    Total Attempts
+                </span>
+
+                <strong>
+                    {{ total_results|default(0) }}
+                </strong>
+
+                <small>
+                    All test attempts
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="result-stat-card">
+
+            <div class="result-stat-icon">
+                🎯
+            </div>
+
+            <div>
+
+                <span>
+                    Average Score
+                </span>
+
+                <strong>
+                    {{ average_score|default(0) }}%
+                </strong>
+
+                <small>
+                    Overall performance
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="result-stat-card">
+
+            <div class="result-stat-icon">
+                🏆
+            </div>
+
+            <div>
+
+                <span>
+                    Highest Score
+                </span>
+
+                <strong>
+                    {{ highest_score|default(0) }}%
+                </strong>
+
+                <small>
+                    Best performance
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="result-stat-card">
+
+            <div class="result-stat-icon">
+                👨‍🎓
+            </div>
+
+            <div>
+
+                <span>
+                    Students Attempted
+                </span>
+
+                <strong>
+                    {{ students_attempted|default(0) }}
+                </strong>
+
+                <small>
+                    Unique students
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SEARCH / FILTER
+         ===================================================== -->
+
+    <section class="results-card">
+
+        <div class="results-card-header">
+
+            <div>
+
+                <h2>
+                    🔎 Result Search
+                </h2>
+
+                <p>
+                    Search results by student or filter by subject.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form
+            method="GET"
+            action="{{ url_for('results') }}"
+            class="result-filter">
+
+            <div class="result-search">
+
+                <span>
+                    🔎
+                </span>
+
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ search|default('') }}"
+                    placeholder="Search student name or email..."
+                    autocomplete="off">
+
+            </div>
+
+
+            <select
+                name="subject"
+                class="subject-select">
+
+                <option value="">
+                    All Subjects
+                </option>
+
+                <option
+                    value="Java"
+                    {% if subject|default('') == 'Java' %}
+                    selected
+                    {% endif %}>
+
+                    Java
+
+                </option>
+
+                <option
+                    value="Python"
+                    {% if subject|default('') == 'Python' %}
+                    selected
+                    {% endif %}>
+
+                    Python
+
+                </option>
+
+                <option
+                    value="Frontend"
+                    {% if subject|default('') == 'Frontend' %}
+                    selected
+                    {% endif %}>
+
+                    Frontend
+
+                </option>
+
+                <option
+                    value="Backend"
+                    {% if subject|default('') == 'Backend' %}
+                    selected
+                    {% endif %}>
+
+                    Backend
+
+                </option>
+
+                <option
+                    value="DBMS"
+                    {% if subject|default('') == 'DBMS' %}
+                    selected
+                    {% endif %}>
+
+                    DBMS
+
+                </option>
+
+                <option
+                    value="OS"
+                    {% if subject|default('') == 'OS' %}
+                    selected
+                    {% endif %}>
+
+                    Operating System
+
+                </option>
+
+            </select>
+
+
+            <select
+                name="performance"
+                class="subject-select">
+
+                <option value="">
+                    All Scores
+                </option>
+
+                <option
+                    value="excellent"
+                    {% if performance|default('') == 'excellent' %}
+                    selected
+                    {% endif %}>
+
+                    80% - 100%
+
+                </option>
+
+                <option
+                    value="good"
+                    {% if performance|default('') == 'good' %}
+                    selected
+                    {% endif %}>
+
+                    60% - 79%
+
+                </option>
+
+                <option
+                    value="average"
+                    {% if performance|default('') == 'average' %}
+                    selected
+                    {% endif %}>
+
+                    40% - 59%
+
+                </option>
+
+                <option
+                    value="low"
+                    {% if performance|default('') == 'low' %}
+                    selected
+                    {% endif %}>
+
+                    Below 40%
+
+                </option>
+
+            </select>
+
+
+            <button
+                type="submit"
+                class="filter-btn">
+
+                Apply
+
+            </button>
+
+
+            <a
+                href="{{ url_for('results') }}"
+                class="reset-btn">
+
+                Reset
+
+            </a>
+
+        </form>
+
+    </section>
+
+
+    <!-- =====================================================
+         RESULTS TABLE
+         ===================================================== -->
+
+    <section class="results-card">
+
+        <div class="table-header">
+
+            <div>
+
+                <h2>
+                    📋 Student Results
+                </h2>
+
+                <p>
+                    Detailed test performance history
+                </p>
+
+            </div>
+
+
+            <div class="live-status">
+
+                <span class="live-dot"></span>
+
+                LIVE DATA
+
+            </div>
+
+        </div>
+
+
+        <div class="results-table-wrapper">
+
+            <table class="results-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Student
+                        </th>
+
+                        <th>
+                            Subject
+                        </th>
+
+                        <th>
+                            Score
+                        </th>
+
+                        <th>
+                            Percentage
+                        </th>
+
+                        <th>
+                            Questions
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for result in results %}
+
+                    <tr>
+
+                        <!-- STUDENT -->
+
+                        <td>
+
+                            <div class="student-result">
+
+                                <div class="result-avatar">
+
+                                    {{ (
+                                        result.name or "U"
+                                    )[0]|upper }}
+
+                                </div>
+
+
+                                <div>
+
+                                    <strong>
+                                        {{ result.name or "Unknown Student" }}
+                                    </strong>
+
+                                    <span>
+                                        {{ result.email or "No email" }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- SUBJECT -->
+
+                        <td>
+
+                            <span class="subject-badge">
+
+                                {{ result.subject or "General" }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- SCORE -->
+
+                        <td>
+
+                            <strong class="score-value">
+
+                                {{ result.score|default(0) }}
+
+                            </strong>
+
+                            {% if result.total_questions is defined %}
+
+                                <span class="score-total">
+
+                                    / {{ result.total_questions }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- PERCENTAGE -->
+
+                        <td>
+
+                            {% set percentage =
+                                result.percentage|default(
+                                    result.score|default(0)
+                                )|float
+                            %}
+
+
+                            <div class="percentage-wrapper">
+
+                                <div class="percentage-top">
+
+                                    <strong>
+                                        {{ percentage|round(1) }}%
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="mini-progress">
+
+                                    <div
+                                        style="width: {{ [percentage, 100]|min }}%;">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- QUESTIONS -->
+
+                        <td>
+
+                            <span class="question-count">
+
+                                {{ result.total_questions|default("-") }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- DATE -->
+
+                        <td>
+
+                            <span class="result-date">
+
+                                {% if result.test_date is defined
+                                      and result.test_date %}
+
+                                    {{ result.test_date }}
+
+                                {% else %}
+
+                                    —
+
+                                {% endif %}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- ACTION -->
+
+                        <td>
+
+                            <div class="result-actions">
+
+                                <a
+                                    href="{{ url_for(
+                                        'result_details',
+                                        result_id=result.id
+                                    ) }}"
+                                    class="view-result"
+                                    title="View Result">
+
+                                    👁️
+
+                                </a>
+
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'delete_result',
+                                        result_id=result.id
+                                    ) }}"
+                                    onsubmit="return confirm(
+                                        'Delete this result permanently?'
+                                    );">
+
+                                    <button
+                                        type="submit"
+                                        class="delete-result"
+                                        title="Delete Result">
+
+                                        🗑️
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="empty-result">
+
+                            <div class="empty-result-icon">
+                                📊
+                            </div>
+
+                            <h3>
+                                No Results Found
+                            </h3>
+
+                            <p>
+                                No test results match your current filters.
+                            </p>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- =================================================
+             PAGINATION
+             ================================================= -->
+
+        {% if pagination is defined and pagination.pages > 1 %}
+
+        <div class="pagination">
+
+            {% if pagination.has_prev %}
+
+                <a
+                    href="{{ url_for(
+                        'results',
+                        page=pagination.prev_num,
+                        q=search,
+                        subject=subject,
+                        performance=performance
+                    ) }}">
+
+                    ← Previous
+
+                </a>
+
+            {% endif %}
+
+
+            {% for page_num in pagination.iter_pages(
+                left_edge=1,
+                right_edge=1,
+                left_current=2,
+                right_current=2
+            ) %}
+
+                {% if page_num %}
+
+                    <a
+                        href="{{ url_for(
+                            'results',
+                            page=page_num,
+                            q=search,
+                            subject=subject,
+                            performance=performance
+                        ) }}"
+                        class="{% if page_num == pagination.page %}active{% endif %}">
+
+                        {{ page_num }}
+
+                    </a>
+
+                {% else %}
+
+                    <span>
+                        …
+                    </span>
+
+                {% endif %}
+
+            {% endfor %}
+
+
+            {% if pagination.has_next %}
+
+                <a
+                    href="{{ url_for(
+                        'results',
+                        page=pagination.next_num,
+                        q=search,
+                        subject=subject,
+                        performance=performance
+                    ) }}">
+
+                    Next →
+
+                </a>
+
+            {% endif %}
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =====================================================
+         PERFORMANCE SUMMARY
+         ===================================================== -->
+
+    <section class="results-card performance-summary">
+
+        <div class="results-card-header">
+
+            <div>
+
+                <h2>
+                    🎯 Performance Summary
+                </h2>
+
+                <p>
+                    Overall platform performance
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-grid">
+
+            <div class="summary-item">
+
+                <span class="summary-label">
+                    Excellent
+                </span>
+
+                <strong>
+                    {{ excellent_count|default(0) }}
+                </strong>
+
+                <small>
+                    80%+
+                </small>
+
+            </div>
+
+
+            <div class="summary-item">
+
+                <span class="summary-label">
+                    Good
+                </span>
+
+                <strong>
+                    {{ good_count|default(0) }}
+                </strong>
+
+                <small>
+                    60% - 79%
+                </small>
+
+            </div>
+
+
+            <div class="summary-item">
+
+                <span class="summary-label">
+                    Average
+                </span>
+
+                <strong>
+                    {{ average_count|default(0) }}
+                </strong>
+
+                <small>
+                    40% - 59%
+                </small>
+
+            </div>
+
+
+            <div class="summary-item">
+
+                <span class="summary-label">
+                    Needs Improvement
+                </span>
+
+                <strong>
+                    {{ low_count|default(0) }}
+                </strong>
+
+                <small>
+                    Below 40%
+                </small>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =========================================================
+     CSS
+     ========================================================= -->
+
+<style>
+
+.results-page {
+    width: 100%;
+}
+
+
+/* HEADER */
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 25px;
+    margin-bottom: 28px;
+}
+
+.results-header h1 {
+    margin: 7px 0;
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.results-header p {
+    margin: 0;
+    color: #6b7280;
+}
+
+.eyebrow {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #6b7280;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+
+/* BUTTONS */
+
+.primary-btn,
+.secondary-btn,
+.filter-btn,
+.reset-btn {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 17px;
+    border-radius: 10px;
+    text-decoration: none;
+    border: 0;
+    cursor: pointer;
+    font-weight: 700;
+    transition: .2s ease;
+}
+
+.primary-btn {
+    background: #111827;
+    color: white;
+}
+
+.secondary-btn,
+.reset-btn {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.filter-btn {
+    background: #2563eb;
+    color: white;
+}
+
+.primary-btn:hover,
+.filter-btn:hover {
+    transform: translateY(-1px);
+    opacity: .9;
+}
+
+
+/* STATISTICS */
+
+.result-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.result-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.04);
+}
+
+.result-stat-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+}
+
+.result-stat-card span {
+    display: block;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.result-stat-card strong {
+    display: block;
+    font-size: 25px;
+    margin: 3px 0;
+}
+
+.result-stat-card small {
+    color: #9ca3af;
+    font-size: 11px;
+}
+
+
+/* CARD */
+
+.results-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 17px;
+    margin-bottom: 22px;
+    overflow: hidden;
+    box-shadow: 0 5px 25px rgba(0,0,0,.04);
+}
+
+
+/* CARD HEADER */
+
+.results-card-header {
+    padding: 22px 24px 12px;
+}
+
+.results-card-header h2 {
+    margin: 0 0 5px;
+    font-size: 19px;
+}
+
+.results-card-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+
+/* FILTER */
+
+.result-filter {
+    display: flex;
+    gap: 10px;
+    padding: 14px 24px 23px;
+}
+
+.result-search {
+    flex: 1;
+    min-height: 43px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+}
+
+.result-search input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    font-size: 14px;
+}
+
+.subject-select {
+    min-width: 160px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 0 12px;
+    background: white;
+    outline: 0;
+}
+
+
+/* TABLE HEADER */
+
+.table-header {
+    padding: 22px 24px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-header h2 {
+    margin: 0 0 5px;
+    font-size: 19px;
+}
+
+.table-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.live-status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #15803d;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+}
+
+
+/* TABLE */
+
+.results-table-wrapper {
+    overflow-x: auto;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.results-table th {
+    text-align: left;
+    padding: 13px 18px;
+    background: #f9fafb;
+    color: #6b7280;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    white-space: nowrap;
+}
+
+.results-table td {
+    padding: 16px 18px;
+    border-top: 1px solid #f0f0f0;
+    vertical-align: middle;
+}
+
+.results-table tbody tr {
+    transition: .15s ease;
+}
+
+.results-table tbody tr:hover {
+    background: #fafafa;
+}
+
+
+/* STUDENT */
+
+.student-result {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 190px;
+}
+
+.result-avatar {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef2ff;
+    color: #4338ca;
+    font-weight: 800;
+}
+
+.student-result strong {
+    display: block;
+    font-size: 13px;
+}
+
+.student-result span {
+    display: block;
+    margin-top: 3px;
+    color: #9ca3af;
+    font-size: 11px;
+}
+
+
+/* SUBJECT */
+
+.subject-badge {
+    display: inline-flex;
+    padding: 6px 10px;
+    border-radius: 7px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+/* SCORE */
+
+.score-value {
+    font-size: 15px;
+}
+
+.score-total {
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+
+/* PERCENTAGE */
+
+.percentage-wrapper {
+    width: 100px;
+}
+
+.percentage-top strong {
+    font-size: 13px;
+}
+
+.mini-progress {
+    width: 100%;
+    height: 5px;
+    margin-top: 6px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #e5e7eb;
+}
+
+.mini-progress div {
+    height: 100%;
+    border-radius: inherit;
+    background: #2563eb;
+}
+
+
+/* QUESTIONS */
+
+.question-count {
+    font-weight: 700;
+    font-size: 13px;
+}
+
+
+/* DATE */
+
+.result-date {
+    color: #6b7280;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+
+/* ACTIONS */
+
+.result-actions {
+    display: flex;
+    gap: 7px;
+}
+
+.view-result,
+.delete-result {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.view-result {
+    background: #eff6ff;
+}
+
+.delete-result {
+    background: #fef2f2;
+}
+
+
+/* EMPTY */
+
+.empty-result {
+    text-align: center;
+    padding: 65px 20px !important;
+}
+
+.empty-result-icon {
+    font-size: 42px;
+}
+
+.empty-result h3 {
+    margin: 12px 0 5px;
+}
+
+.empty-result p {
+    color: #6b7280;
+    margin: 0;
+}
+
+
+/* SUMMARY */
+
+.performance-summary {
+    padding-bottom: 24px;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    padding: 10px 24px 0;
+}
+
+.summary-item {
+    padding: 18px;
+    border-radius: 12px;
+    background: #f9fafb;
+}
+
+.summary-label {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.summary-item strong {
+    display: block;
+    font-size: 25px;
+    margin: 5px 0;
+}
+
+.summary-item small {
+    color: #9ca3af;
+}
+
+
+/* PAGINATION */
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 20px;
+    border-top: 1px solid #eee;
+}
+
+.pagination a,
+.pagination span {
+    min-width: 35px;
+    height: 35px;
+    padding: 0 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #374151;
+    font-size: 13px;
+}
+
+.pagination a:hover,
+.pagination a.active {
+    background: #111827;
+    color: white;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 1050px) {
+
+    .result-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 800px) {
+
+    .results-header {
+        flex-direction: column;
+    }
+
+    .header-actions {
+        width: 100%;
+    }
+
+    .header-actions a,
+    .header-actions button {
+        flex: 1;
+    }
+
+    .result-filter {
+        flex-direction: column;
+    }
+
+    .subject-select {
+        min-height: 43px;
+    }
+
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 550px) {
+
+    .result-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+{% endblock %}

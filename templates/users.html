@@ -1,0 +1,414 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Admin Dashboard
+{% endblock %}
+
+
+{% block content %}
+
+<header class="topbar">
+
+    <div>
+
+        <span class="eyebrow">
+            ADMIN ANALYTICS
+        </span>
+
+        <h1>
+            Placement Dashboard
+        </h1>
+
+        <p>
+            Monitor students, tests and platform activity.
+        </p>
+
+    </div>
+
+
+    <button
+        onclick="location.reload()"
+        class="secondary-btn">
+
+        🔄 Refresh
+
+    </button>
+
+</header>
+
+
+
+<section class="stats-grid">
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            👨‍🎓
+        </div>
+
+        <span>
+            Total Students
+        </span>
+
+        <strong>
+            {{ stats.users }}
+        </strong>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            🟢
+        </div>
+
+        <span>
+            Active Students
+        </span>
+
+        <strong>
+            {{ stats.active_users }}
+        </strong>
+
+        <small>
+            Last 30 days
+        </small>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            🆕
+        </div>
+
+        <span>
+            New Students
+        </span>
+
+        <strong>
+            {{ stats.new_users }}
+        </strong>
+
+        <small>
+            Last 30 days
+        </small>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            🎯
+        </div>
+
+        <span>
+            Average Score
+        </span>
+
+        <strong>
+            {{ stats.average_score }}%
+        </strong>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📝
+        </div>
+
+        <span>
+            Mock Questions
+        </span>
+
+        <strong>
+            {{ stats.mock_questions }}
+        </strong>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            💬
+        </div>
+
+        <span>
+            Interview Questions
+        </span>
+
+        <strong>
+            {{ stats.interview_questions }}
+        </strong>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📊
+        </div>
+
+        <span>
+            Test Attempts
+        </span>
+
+        <strong>
+            {{ stats.results }}
+        </strong>
+
+    </div>
+
+
+</section>
+
+
+
+<div class="dashboard-grid">
+
+
+    <section class="card">
+
+        <div class="card-header">
+
+            <h2>
+                Recent Students
+            </h2>
+
+            <a
+                href="{{ url_for('users') }}">
+
+                View All →
+
+            </a>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Student
+                        </th>
+
+                        <th>
+                            Email
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for student in students %}
+
+                    <tr>
+
+                        <td>
+                            #{{ student.id }}
+                        </td>
+
+                        <td>
+
+                            <strong>
+                                {{ student.name or "Unknown" }}
+                            </strong>
+
+                        </td>
+
+                        <td>
+                            {{ student.email or "-" }}
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="3"
+                            class="empty">
+
+                            No students found.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+
+    <section class="card">
+
+        <div class="card-header">
+
+            <h2>
+                Test Performance
+            </h2>
+
+        </div>
+
+
+        {% for category in categories %}
+
+        <div class="performance">
+
+            <div class="performance-title">
+
+                <strong>
+                    {{ category.category }}
+                </strong>
+
+                <span>
+                    {{ category.average_score }}%
+                </span>
+
+            </div>
+
+
+            <div class="progress">
+
+                <div
+                    style="
+                    width:
+                    {{ [category.average_score|float,100]|min }}%;
+                    ">
+                </div>
+
+            </div>
+
+
+            <small>
+
+                {{ category.attempts }}
+                attempts
+
+            </small>
+
+        </div>
+
+        {% else %}
+
+            <div class="empty">
+
+                No test data available.
+
+            </div>
+
+        {% endfor %}
+
+    </section>
+
+</div>
+
+
+
+<section class="card">
+
+    <div class="card-header">
+
+        <h2>
+            Platform Overview
+        </h2>
+
+        <span class="live">
+            ● LIVE
+        </span>
+
+    </div>
+
+
+    <div class="overview-grid">
+
+        <div>
+
+            <strong>
+                {{ stats.users }}
+            </strong>
+
+            <span>
+                Registered Students
+            </span>
+
+        </div>
+
+
+        <div>
+
+            <strong>
+                {{ stats.active_users }}
+            </strong>
+
+            <span>
+                Active Students
+            </span>
+
+        </div>
+
+
+        <div>
+
+            <strong>
+                {{ stats.results }}
+            </strong>
+
+            <span>
+                Test Attempts
+            </span>
+
+        </div>
+
+
+        <div>
+
+            <strong>
+                {{ stats.average_score }}%
+            </strong>
+
+            <span>
+                Average Score
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,300 @@
+/* ==========================================
+   ADMIN PANEL CSS
+========================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --primary:#2563eb;
+    --secondary:#1d4ed8;
+    --success:#10b981;
+    --danger:#ef4444;
+    --warning:#f59e0b;
+
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+
+    --sidebar:#111827;
+    --sidebar-hover:#1f2937;
+
+    --shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+body{
+    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+.app{
+    display:flex;
+    min-height:100vh;
+}
+
+/* ==========================
+      SIDEBAR
+========================== */
+
+.sidebar{
+    width:270px;
+    background:var(--sidebar);
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    padding:25px 18px;
+}
+
+.brand{
+    font-size:24px;
+    font-weight:bold;
+    text-align:center;
+    margin-bottom:35px;
+}
+
+.brand span{
+    display:block;
+    margin-top:10px;
+    font-size:20px;
+}
+
+.sidebar nav{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.sidebar nav a{
+    text-decoration:none;
+    color:#fff;
+    padding:14px 16px;
+    border-radius:12px;
+    transition:.3s;
+    font-weight:600;
+}
+
+.sidebar nav a:hover{
+    background:var(--primary);
+    transform:translateX(6px);
+}
+
+/* ==========================
+      PROFILE
+========================== */
+
+.admin-profile{
+    margin-top:30px;
+    padding:20px;
+    background:rgba(255,255,255,.08);
+    border-radius:15px;
+    text-align:center;
+}
+
+.admin-profile strong{
+    display:block;
+    font-size:17px;
+}
+
+.admin-profile small{
+    display:block;
+    color:#d1d5db;
+    margin:8px 0 15px;
+}
+
+.admin-profile a{
+    text-decoration:none;
+    color:#fff;
+    background:var(--danger);
+    padding:10px 18px;
+    display:inline-block;
+    border-radius:8px;
+    transition:.3s;
+}
+
+.admin-profile a:hover{
+    background:#dc2626;
+}
+
+/* ==========================
+      MAIN
+========================== */
+
+.main{
+    flex:1;
+    margin-left:270px;
+    padding:35px;
+}
+
+/* ==========================
+      CARDS
+========================== */
+
+.card{
+    background:var(--card);
+    border-radius:16px;
+    padding:25px;
+    box-shadow:var(--shadow);
+    margin-bottom:25px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:20px;
+}
+
+/* ==========================
+      TABLE
+========================== */
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#fff;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+}
+
+th{
+    background:var(--primary);
+    color:#fff;
+}
+
+th,
+td{
+    padding:14px;
+    text-align:left;
+    border-bottom:1px solid var(--border);
+}
+
+tr:hover{
+    background:#f9fafb;
+}
+
+/* ==========================
+      BUTTONS
+========================== */
+
+button,
+.btn{
+    background:var(--primary);
+    color:#fff;
+    border:none;
+    padding:12px 22px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.3s;
+    text-decoration:none;
+    display:inline-block;
+}
+
+button:hover,
+.btn:hover{
+    background:var(--secondary);
+}
+
+/* ==========================
+      INPUTS
+========================== */
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #d1d5db;
+    border-radius:8px;
+    margin-top:6px;
+    margin-bottom:18px;
+    font-size:15px;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    outline:none;
+    border-color:var(--primary);
+}
+
+/* ==========================
+      FLASH MESSAGE
+========================== */
+
+.flash{
+    padding:15px;
+    margin-bottom:20px;
+    border-radius:10px;
+    font-weight:600;
+}
+
+.flash.success{
+    background:#d1fae5;
+    color:#065f46;
+}
+
+.flash.error{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.flash.warning{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+/* ==========================
+      RESPONSIVE
+========================== */
+
+@media(max-width:900px){
+
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+    }
+
+    .main{
+        margin-left:0;
+        padding:20px;
+    }
+
+    .app{
+        flex-direction:column;
+    }
+
+}
+
+@media(max-width:600px){
+
+    .brand{
+        font-size:20px;
+    }
+
+    .sidebar nav a{
+        padding:12px;
+        font-size:15px;
+    }
+
+    table{
+        display:block;
+        overflow-x:auto;
+    }
+
+    .main{
+        padding:15px;
+    }
+
+}

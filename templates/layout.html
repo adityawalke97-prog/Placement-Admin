@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Placement Portal - Admin Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+background:linear-gradient(-45deg,#0f172a,#1e3a8a,#2563eb,#0ea5e9);
+background-size:400% 400%;
+animation:bgMove 12s ease infinite;
+}
+
+@keyframes bgMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+.circle{
+position:absolute;
+border-radius:50%;
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(5px);
+animation:float 10s linear infinite;
+}
+
+.circle:nth-child(1){
+width:220px;
+height:220px;
+left:-70px;
+top:-70px;
+}
+
+.circle:nth-child(2){
+width:180px;
+height:180px;
+right:60px;
+top:100px;
+animation-duration:14s;
+}
+
+.circle:nth-child(3){
+width:260px;
+height:260px;
+bottom:-120px;
+right:-60px;
+animation-duration:18s;
+}
+
+@keyframes float{
+50%{
+transform:translateY(-30px);
+}
+}
+
+.login-card{
+
+width:420px;
+padding:45px;
+border-radius:25px;
+
+background:rgba(255,255,255,.12);
+
+backdrop-filter:blur(25px);
+
+border:1px solid rgba(255,255,255,.2);
+
+box-shadow:0 25px 60px rgba(0,0,0,.35);
+
+color:#fff;
+
+animation:show .8s ease;
+}
+
+@keyframes show{
+
+from{
+
+opacity:0;
+
+transform:translateY(50px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+}
+
+.logo{
+
+font-size:60px;
+
+text-align:center;
+
+margin-bottom:10px;
+
+}
+
+h2{
+
+text-align:center;
+
+margin-bottom:8px;
+
+font-weight:700;
+
+}
+
+.subtitle{
+
+text-align:center;
+
+margin-bottom:35px;
+
+opacity:.85;
+
+font-size:14px;
+
+}
+
+.input-box{
+
+position:relative;
+
+margin-bottom:25px;
+
+}
+
+.input-box input{
+
+width:100%;
+
+padding:16px 45px 16px 15px;
+
+border:none;
+
+outline:none;
+
+background:rgba(255,255,255,.12);
+
+border:1px solid rgba(255,255,255,.2);
+
+border-radius:12px;
+
+color:white;
+
+font-size:15px;
+
+transition:.3s;
+
+}
+
+.input-box input:focus{
+
+border-color:#38bdf8;
+
+box-shadow:0 0 15px rgba(56,189,248,.4);
+
+}
+
+.input-box label{
+
+position:absolute;
+
+left:15px;
+
+top:15px;
+
+pointer-events:none;
+
+transition:.3s;
+
+color:#ddd;
+
+}
+
+.input-box input:focus~label,
+
+.input-box input:valid~label{
+
+top:-10px;
+
+left:12px;
+
+font-size:12px;
+
+padding:0 6px;
+
+background:#0f172a;
+
+border-radius:5px;
+
+color:#38bdf8;
+
+}
+
+.icon{
+
+position:absolute;
+
+right:15px;
+
+top:15px;
+
+font-size:18px;
+
+cursor:pointer;
+
+}
+
+.options{
+
+display:flex;
+
+justify-content:space-between;
+
+font-size:14px;
+
+margin-bottom:25px;
+
+}
+
+.options label{
+
+display:flex;
+
+align-items:center;
+
+gap:6px;
+
+cursor:pointer;
+
+}
+
+.options a{
+
+color:#fff;
+
+text-decoration:none;
+
+}
+
+.options a:hover{
+
+text-decoration:underline;
+
+}
+
+.login-btn{
+
+width:100%;
+
+padding:15px;
+
+border:none;
+
+border-radius:12px;
+
+background:linear-gradient(135deg,#2563eb,#38bdf8);
+
+color:white;
+
+font-size:17px;
+
+font-weight:600;
+
+cursor:pointer;
+
+transition:.35s;
+
+}
+
+.login-btn:hover{
+
+transform:translateY(-3px);
+
+box-shadow:0 10px 25px rgba(0,0,0,.3);
+
+}
+
+.divider{
+
+margin:30px 0;
+
+display:flex;
+
+align-items:center;
+
+}
+
+.divider::before,
+
+.divider::after{
+
+content:"";
+
+flex:1;
+
+height:1px;
+
+background:rgba(255,255,255,.25);
+
+}
+
+.divider span{
+
+padding:0 12px;
+
+font-size:13px;
+
+}
+
+.social{
+
+display:grid;
+
+grid-template-columns:repeat(3,1fr);
+
+gap:15px;
+
+}
+
+.social button{
+
+padding:12px;
+
+border:none;
+
+border-radius:12px;
+
+cursor:pointer;
+
+background:rgba(255,255,255,.15);
+
+color:white;
+
+font-size:18px;
+
+transition:.3s;
+
+}
+
+.social button:hover{
+
+transform:translateY(-4px);
+
+background:#2563eb;
+
+}
+
+.signup{
+
+margin-top:25px;
+
+text-align:center;
+
+font-size:14px;
+
+}
+
+.signup a{
+
+color:#7dd3fc;
+
+text-decoration:none;
+
+font-weight:600;
+
+}
+
+.signup a:hover{
+
+text-decoration:underline;
+
+}
+
+@media(max-width:500px){
+
+.login-card{
+
+width:92%;
+
+padding:30px;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="circle"></div>
+<div class="circle"></div>
+<div class="circle"></div>
+
+<div class="login-card">
+
+<div class="logo">🎓</div>
+
+<h2>Placement Portal</h2>
+
+<p class="subtitle">
+Admin Login
+</p>
+
+<form action="/admin/login" method="POST">
+
+<div class="input-box">
+
+<input type="text" name="username" required>
+
+<label>Username</label>
+
+<span class="icon">👤</span>
+
+</div>
+
+<div class="input-box">
+
+<input type="password" id="password" name="password" required>
+
+<label>Password</label>
+
+<span class="icon" onclick="togglePassword()">👁</span>
+
+</div>
+
+<div class="options">
+
+<label>
+
+<input type="checkbox">
+
+Remember Me
+
+</label>
+
+<a href="#">Forgot Password?</a>
+
+</div>
+
+<button class="login-btn">
+Login
+</button>
+
+</form>
+
+<div class="divider">
+<span>OR</span>
+</div>
+
+<div class="social">
+
+<button>G</button>
+
+<button>f</button>
+
+<button>X</button>
+
+</div>
+
+<div class="signup">
+
+Don't have an account?
+
+<a href="#">Register</a>
+
+</div>
+
+</div>
+
+<script>
+
+function togglePassword(){
+
+const password=document.getElementById("password");
+
+password.type=password.type==="password"?"text":"password";
+
+}
+
+</script>
+
+</body>
+</html>

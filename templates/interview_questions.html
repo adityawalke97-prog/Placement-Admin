@@ -1,0 +1,1153 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Interview Questions | Admin
+{% endblock %}
+
+{% block content %}
+
+<div class="page-container">
+
+    <!-- =====================================================
+         PAGE HEADER
+         ===================================================== -->
+
+    <div class="page-header">
+
+        <div>
+            <span class="eyebrow">
+                QUESTION MANAGEMENT
+            </span>
+
+            <h1>
+                Interview Questions
+            </h1>
+
+            <p>
+                Manage interview preparation questions,
+                categories and question bank.
+            </p>
+        </div>
+
+        <div class="page-actions">
+
+            <button
+                type="button"
+                class="secondary-btn"
+                onclick="location.reload()">
+
+                🔄 Refresh
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         STAT CARDS
+         ===================================================== -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-icon">
+                    💬
+                </div>
+
+                <span class="stat-trend">
+                    LIVE
+                </span>
+
+            </div>
+
+            <span class="stat-label">
+                Total Questions
+            </span>
+
+            <strong class="stat-value">
+                {{ total_questions|default(0) }}
+            </strong>
+
+            <small>
+                Interview question bank
+            </small>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-icon">
+                    📚
+                </div>
+
+                <span class="stat-trend">
+                    CATEGORIES
+                </span>
+
+            </div>
+
+            <span class="stat-label">
+                Categories
+            </span>
+
+            <strong class="stat-value">
+                {{ categories|length }}
+            </strong>
+
+            <small>
+                Available subjects
+            </small>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-icon">
+                    🔎
+                </div>
+
+                <span class="stat-trend">
+                    SEARCH
+                </span>
+
+            </div>
+
+            <span class="stat-label">
+                Showing
+            </span>
+
+            <strong class="stat-value">
+                {{ questions|length }}
+            </strong>
+
+            <small>
+                Questions on this page
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         FILTER / SEARCH
+         ===================================================== -->
+
+    <section class="dashboard-card">
+
+        <div class="card-header">
+
+            <div class="card-header-left">
+
+                <h2>
+                    🔍 Find Questions
+                </h2>
+
+                <p>
+                    Search and filter the interview question bank.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form
+            method="GET"
+            action="{{ url_for('interview_questions') }}"
+            class="filter-form">
+
+            <div class="search-box">
+
+                <span>
+                    🔎
+                </span>
+
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ search|default('') }}"
+                    placeholder="Search question..."
+                    autocomplete="off">
+
+            </div>
+
+
+            <div class="select-box">
+
+                <select name="category">
+
+                    <option value="">
+                        All Categories
+                    </option>
+
+                    {% for category in categories %}
+
+                    <option
+                        value="{{ category }}"
+                        {% if selected_category|default('') == category %}
+                        selected
+                        {% endif %}>
+
+                        {{ category }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="primary-btn">
+
+                Search
+
+            </button>
+
+
+            {% if search or selected_category %}
+
+            <a
+                href="{{ url_for('interview_questions') }}"
+                class="secondary-btn">
+
+                Clear
+
+            </a>
+
+            {% endif %}
+
+        </form>
+
+    </section>
+
+
+    <!-- =====================================================
+         QUESTION TABLE
+         ===================================================== -->
+
+    <section class="dashboard-card">
+
+        <div class="card-header">
+
+            <div class="card-header-left">
+
+                <h2>
+                    💬 Question Bank
+                </h2>
+
+                <p>
+                    Manage interview questions from the admin panel.
+                </p>
+
+            </div>
+
+            <span class="live-status">
+
+                <span class="live-dot"></span>
+
+                {{ total_questions|default(0) }} QUESTIONS
+
+            </span>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table class="admin-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Question
+                        </th>
+
+                        <th>
+                            Category
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for question in questions %}
+
+                    <tr>
+
+                        <!-- ID -->
+
+                        <td>
+
+                            <span class="id-badge">
+                                #{{ question.id }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- QUESTION -->
+
+                        <td>
+
+                            <div class="question-content">
+
+                                <strong>
+                                    {{ question.question }}
+                                </strong>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- CATEGORY -->
+
+                        <td>
+
+                            <span class="category-badge">
+
+                                {{ question.category or "General" }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- ACTIONS -->
+
+                        <td>
+
+                            <div class="action-buttons">
+
+                                <button
+                                    type="button"
+                                    class="icon-btn view-btn"
+                                    onclick="showQuestion(
+                                        {{ question.id|tojson }},
+                                        {{ question.question|tojson }}
+                                    )"
+                                    title="View">
+
+                                    👁️
+
+                                </button>
+
+
+                                {% if question.id %}
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('delete_interview_question', question_id=question.id) }}"
+                                    onsubmit="return confirmDelete();"
+                                    style="display:inline;">
+
+                                    <button
+                                        type="submit"
+                                        class="icon-btn delete-btn"
+                                        title="Delete">
+
+                                        🗑️
+
+                                    </button>
+
+                                </form>
+
+                                {% endif %}
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="4"
+                            class="empty">
+
+                            <div class="empty-state">
+
+                                <div class="empty-icon">
+                                    💬
+                                </div>
+
+                                <h3>
+                                    No interview questions found
+                                </h3>
+
+                                <p>
+                                    Try another search or category.
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- =================================================
+             PAGINATION
+             ================================================= -->
+
+        {% if pagination is defined and pagination.pages > 1 %}
+
+        <div class="pagination">
+
+            {% if pagination.has_prev %}
+
+            <a
+                href="{{ url_for(
+                    'interview_questions',
+                    page=pagination.prev_num,
+                    q=search,
+                    category=selected_category
+                ) }}"
+                class="page-btn">
+
+                ← Previous
+
+            </a>
+
+            {% endif %}
+
+
+            <div class="page-numbers">
+
+                {% for page_num in pagination.iter_pages(
+                    left_edge=1,
+                    right_edge=1,
+                    left_current=2,
+                    right_current=2
+                ) %}
+
+                    {% if page_num %}
+
+                        {% if page_num == pagination.page %}
+
+                        <span class="page-btn active">
+                            {{ page_num }}
+                        </span>
+
+                        {% else %}
+
+                        <a
+                            href="{{ url_for(
+                                'interview_questions',
+                                page=page_num,
+                                q=search,
+                                category=selected_category
+                            ) }}"
+                            class="page-btn">
+
+                            {{ page_num }}
+
+                        </a>
+
+                        {% endif %}
+
+                    {% else %}
+
+                        <span class="page-dots">
+                            ...
+                        </span>
+
+                    {% endif %}
+
+                {% endfor %}
+
+            </div>
+
+
+            {% if pagination.has_next %}
+
+            <a
+                href="{{ url_for(
+                    'interview_questions',
+                    page=pagination.next_num,
+                    q=search,
+                    category=selected_category
+                ) }}"
+                class="page-btn">
+
+                Next →
+
+            </a>
+
+            {% endif %}
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+
+<!-- =====================================================
+     VIEW QUESTION MODAL
+     ===================================================== -->
+
+<div
+    id="questionModal"
+    class="question-modal"
+    onclick="closeQuestionModal(event)">
+
+    <div
+        class="question-modal-content"
+        onclick="event.stopPropagation()">
+
+        <div class="modal-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    INTERVIEW QUESTION
+                </span>
+
+                <h2>
+                    Question Details
+                </h2>
+
+            </div>
+
+            <button
+                type="button"
+                class="modal-close"
+                onclick="closeQuestionModal()">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+            <div class="modal-question-id">
+                Question #<span id="modalQuestionId"></span>
+            </div>
+
+            <p id="modalQuestionText"></p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     CSS
+     ===================================================== -->
+
+<style>
+
+.page-container {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.page-header h1 {
+    margin: 6px 0 8px;
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+}
+
+.page-header p {
+    margin: 0;
+    color: #718096;
+}
+
+.page-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.stat-card {
+    background: #ffffff;
+    border: 1px solid #e8edf3;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.05);
+    transition: 0.25s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 35px rgba(15, 23, 42, 0.09);
+}
+
+.stat-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.stat-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    font-size: 21px;
+}
+
+.stat-trend {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+    color: #64748b;
+}
+
+.stat-label {
+    display: block;
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    display: block;
+    font-size: 30px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.stat-card small {
+    color: #94a3b8;
+}
+
+.dashboard-card {
+    background: #ffffff;
+    border: 1px solid #e8edf3;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.card-header-left h2 {
+    margin: 0 0 5px;
+    font-size: 20px;
+}
+
+.card-header-left p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.live-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: #16a34a;
+    white-space: nowrap;
+}
+
+.live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+}
+
+.filter-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    flex: 1;
+    min-width: 240px;
+    height: 46px;
+    border: 1px solid #dce3eb;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 9px;
+    background: #f8fafc;
+}
+
+.search-box span {
+    font-size: 16px;
+}
+
+.search-box input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+}
+
+.select-box select {
+    height: 46px;
+    min-width: 180px;
+    border: 1px solid #dce3eb;
+    border-radius: 12px;
+    padding: 0 13px;
+    background: #ffffff;
+    outline: none;
+}
+
+.primary-btn,
+.secondary-btn {
+    min-height: 46px;
+    padding: 0 18px;
+    border-radius: 11px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.primary-btn {
+    background: #111827;
+    color: white;
+}
+
+.primary-btn:hover {
+    background: #000000;
+}
+
+.secondary-btn {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.secondary-btn:hover {
+    background: #e2e8f0;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
+}
+
+.admin-table th {
+    text-align: left;
+    padding: 14px 16px;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.admin-table td {
+    padding: 17px 16px;
+    border-bottom: 1px solid #eef2f7;
+    vertical-align: middle;
+}
+
+.admin-table tbody tr {
+    transition: 0.2s ease;
+}
+
+.admin-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.id-badge {
+    display: inline-flex;
+    padding: 5px 9px;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.question-content {
+    max-width: 650px;
+}
+
+.question-content strong {
+    color: #1e293b;
+    line-height: 1.55;
+    font-size: 14px;
+}
+
+.category-badge {
+    display: inline-flex;
+    padding: 7px 11px;
+    border-radius: 20px;
+    background: #eef2ff;
+    color: #4f46e5;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 7px;
+}
+
+.icon-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s ease;
+}
+
+.view-btn {
+    background: #eff6ff;
+}
+
+.view-btn:hover {
+    background: #dbeafe;
+}
+
+.delete-btn {
+    background: #fef2f2;
+}
+
+.delete-btn:hover {
+    background: #fee2e2;
+}
+
+.empty {
+    text-align: center;
+    padding: 60px 20px !important;
+}
+
+.empty-state {
+    color: #64748b;
+}
+
+.empty-icon {
+    font-size: 38px;
+}
+
+.empty-state h3 {
+    margin: 12px 0 5px;
+    color: #334155;
+}
+
+.empty-state p {
+    margin: 0;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.page-numbers {
+    display: flex;
+    gap: 5px;
+}
+
+.page-btn {
+    min-width: 38px;
+    height: 38px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: #334155;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.page-btn:hover,
+.page-btn.active {
+    background: #111827;
+    color: white;
+    border-color: #111827;
+}
+
+.page-dots {
+    padding: 0 5px;
+    color: #94a3b8;
+}
+
+
+/* =====================================================
+   MODAL
+   ===================================================== */
+
+.question-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.58);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.question-modal.show {
+    display: flex;
+}
+
+.question-modal-content {
+    width: 100%;
+    max-width: 650px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 24px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.modal-header h2 {
+    margin: 5px 0 0;
+}
+
+.modal-close {
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 10px;
+    background: #f1f5f9;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 28px;
+}
+
+.modal-question-id {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.modal-body p {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.7;
+    color: #1e293b;
+}
+
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
+
+@media (max-width: 900px) {
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .page-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-card {
+        padding: 16px;
+        border-radius: 15px;
+    }
+
+    .page-header h1 {
+        font-size: 27px;
+    }
+
+    .filter-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .select-box select,
+    .primary-btn,
+    .secondary-btn {
+        width: 100%;
+    }
+
+}
+
+</style>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script>
+
+function showQuestion(id, question) {
+
+    document.getElementById(
+        "modalQuestionId"
+    ).textContent = id;
+
+    document.getElementById(
+        "modalQuestionText"
+    ).textContent = question;
+
+    document.getElementById(
+        "questionModal"
+    ).classList.add("show");
+}
+
+
+function closeQuestionModal(event) {
+
+    if (
+        event &&
+        event.target !== document.getElementById("questionModal")
+    ) {
+        return;
+    }
+
+    document.getElementById(
+        "questionModal"
+    ).classList.remove("show");
+}
+
+
+function confirmDelete() {
+
+    return confirm(
+        "Are you sure you want to delete this interview question? This action cannot be undone."
+    );
+
+}
+
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Escape") {
+
+            document.getElementById(
+                "questionModal"
+            ).classList.remove("show");
+
+        }
+
+    }
+);
+
+</script>
+
+{% endblock %}
