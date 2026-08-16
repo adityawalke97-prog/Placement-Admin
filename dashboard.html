@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Dashboard - Placement Admin</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <div class="card" id="dashboardCard">
+      <h1>Dashboard</h1>
+      <p id="welcome"></p>
+      <p>This is a minimal static admin dashboard. Replace with real admin features as needed.</p>
+      <button id="logout" class="btn">Logout</button>
+    </div>
+  </main>
+  <script>
+    // Protect dashboard: require the client-side flag
+    if (localStorage.getItem("loggedIn") !== "1") {
+      window.location.href = "index.html";
+    } else {
+      const userEmail = localStorage.getItem("userEmail") || "(unknown)";
+      document.getElementById("welcome").textContent = "Welcome — " + userEmail;
+      document.getElementById("logout").addEventListener("click", () => {
+        localStorage.removeItem("loggedIn");
+        localStorage.removeItem("userEmail");
+        window.location.href = "index.html";
+      });
+    }
+  </script>
+</body>
+</html>
